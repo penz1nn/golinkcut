@@ -1,3 +1,4 @@
+// TODO delete this package
 package memory
 
 import (
@@ -38,18 +39,3 @@ func (s *Storage) GetKey(ctx context.Context, key string) string {
 	}
 	return string(value)
 }
-
-/*
-
-func (s *Storage) SetKey(key string, value string) {
-	s.c.Set(key, value, cache.NoExpiration)
-}
-
-func (s *Storage) GetKey(key string) string {
-	value, found := s.c.Get(key)
-	if found {
-		return value.(string)
-	}
-	return ""
-}
-*/
