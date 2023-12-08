@@ -14,14 +14,6 @@ const (
 	orig2  = "https://github.com/penz1nn"
 )
 
-func initStorageMemory(t *testing.T, s *Storage) {
-	config := config.Config{
-		"db": "memory",
-	}
-	storage := NewStorage(config)
-	s = &storage
-}
-
 func TestNewStorage(t *testing.T) {
 	c := config.Config{"db": "memory"}
 	s := NewStorage(c)

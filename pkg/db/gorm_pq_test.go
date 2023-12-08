@@ -19,7 +19,7 @@ const (
 )
 
 func initStorage(t *testing.T) Storage {
-	config := config.Config{
+	cfg := config.Config{
 		"db": map[string]string{
 			"host":     host,
 			"user":     user,
@@ -34,7 +34,7 @@ func initStorage(t *testing.T) Storage {
 			t.Skip("Could not connect to PostgreSQL, skipping")
 		}
 	}()
-	storage := NewStorage(config)
+	storage := NewStorage(cfg)
 	t.Cleanup(func() {
 		storage.deleteData()
 	})
