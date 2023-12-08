@@ -1,5 +1,6 @@
 package link
 
+/*
 import (
 	"context"
 	"golinkcut/internal/entity"
@@ -21,3 +22,4 @@ type service struct {
 }
 
 //func NewService(repo Repository, logger log.Logger)
+*/
