@@ -21,6 +21,10 @@ func (s *grpcServer) CreateLink(ctx context.Context, req *CreateLinkRequest) (*C
 		if errors.As(err, &errLinkExists) {
 			return nil, status.Errorf(codes.AlreadyExists, "This link already exists: %v", url)
 		}
+		var errBadUrl link.ErrBadUrl
+		if errors.As(err, &errBadUrl) {
+			return nil, status.Errorf(codes.InvalidArgument, "Wrong format of url: %v", url)
+		}
 		return nil, status.Errorf(codes.Unknown, "Error: %v", err)
 	}
 	res := &CreateLinkResponse{Alias: l.Alias}

@@ -22,8 +22,9 @@ func init() {
 	lis = bufconn.Listen(bufSize)
 	s := grpc.NewServer()
 	c := config.Config{
-		"db":    "memory",
-		"debug": false,
+		"db":       "memory",
+		"debug":    false,
+		"validate": true,
 	}
 
 	repo := link.NewStorage(c)
@@ -119,6 +120,24 @@ func TestLinkServiceClient_GetLink_NotExists(t *testing.T) {
 		t.Error("Expected not nil error but got nil")
 	}
 	if !strings.Contains(err.Error(), "code = NotFound") {
+		t.Errorf("Wrong error (or error format): %v", err)
+	}
+}
+
+func TestLinkServiceClient_CreateLink_BadUrl(t *testing.T) {
+	url := "abracadabra-im-not-url"
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		t.Fatalf("Failed to dial bufnet: %v", err)
+	}
+	defer conn.Close()
+	client := NewLinkServiceClient(conn)
+	_, err = client.CreateLink(ctx, &CreateLinkRequest{Url: url})
+	if err == nil {
+		t.Error("Expected not nil error but got nil")
+	}
+	if !strings.Contains(err.Error(), "code = InvalidArgument") {
 		t.Errorf("Wrong error (or error format): %v", err)
 	}
 }

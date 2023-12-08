@@ -85,7 +85,7 @@ func NewUseCase(repo Repository, logger log.Logger, config config.Config) UseCas
 	return usecase{repo: repo, logger: logger, validate: validate}
 }
 
-// TODO: use hashing instead
+// TODO: use hashing instead (will allow for faster in-memory kv store)
 func generateShortAlias() string {
 	b := make([]byte, n)
 	for i := range b {
