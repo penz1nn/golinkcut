@@ -9,8 +9,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
-	defaultlog "log"
 	"net"
+	"strings"
 	"testing"
 )
 
@@ -23,7 +23,7 @@ func init() {
 	s := grpc.NewServer()
 	c := config.Config{
 		"db":    "memory",
-		"debug": true,
+		"debug": false,
 	}
 
 	repo := link.NewStorage(c)
@@ -43,6 +43,25 @@ func bufDialer(ctx context.Context, address string) (net.Conn, error) {
 }
 
 func TestLinkServiceClient_CreateLink(t *testing.T) {
+	url := "yandex.com/?s=golang"
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		t.Fatalf("Failed to dial bufnet: %v", err)
+	}
+	defer conn.Close()
+	client := NewLinkServiceClient(conn)
+	resp, err := client.CreateLink(ctx, &CreateLinkRequest{Url: url})
+	if err != nil {
+		t.Fatalf("CreateLink failed: %v", err)
+	}
+	gotAlias := resp.GetAlias()
+	if len(gotAlias) != 10 {
+		t.Fatalf("Wrong alias format: %s", gotAlias)
+	}
+}
+
+func TestLinkServiceClient_GetLink(t *testing.T) {
 	ctx := context.Background()
 	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -54,5 +73,52 @@ func TestLinkServiceClient_CreateLink(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateLink failed: %v", err)
 	}
-	defaultlog.Printf("Got alias: %v", resp.GetAlias())
+	gotAlias := resp.GetAlias()
+	resp2, err := client.GetLink(context.Background(), &GetLinkRequest{Alias: gotAlias})
+	if err != nil {
+		t.Fatalf("GetLink failed: %v", err)
+	}
+	gotUrl := resp2.GetUrl()
+	if gotUrl != "google.com" {
+		t.Errorf("Got wrong url: %v", gotUrl)
+	}
+}
+
+func TestLinkServiceClient_CreateLink_Exists(t *testing.T) {
+	url := "medium.com/123124/23123018"
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		t.Fatalf("Failed to dial bufnet: %v", err)
+	}
+	defer conn.Close()
+	client := NewLinkServiceClient(conn)
+	_, err = client.CreateLink(ctx, &CreateLinkRequest{Url: url})
+	if err != nil {
+		t.Fatalf("CreateLink failed: %v", err)
+	}
+	_, err = client.CreateLink(ctx, &CreateLinkRequest{Url: url})
+	if err == nil {
+		t.Error("Expected not nil error but got nil")
+	}
+	if !strings.Contains(err.Error(), "code = AlreadyExists") {
+		t.Errorf("Wrong error (or error format): %v", err)
+	}
+}
+
+func TestLinkServiceClient_GetLink_NotExists(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(bufDialer), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		t.Fatalf("Failed to dial bufnet: %v", err)
+	}
+	defer conn.Close()
+	client := NewLinkServiceClient(conn)
+	_, err = client.GetLink(context.Background(), &GetLinkRequest{Alias: "0123456789"})
+	if err == nil {
+		t.Error("Expected not nil error but got nil")
+	}
+	if !strings.Contains(err.Error(), "code = NotFound") {
+		t.Errorf("Wrong error (or error format): %v", err)
+	}
 }

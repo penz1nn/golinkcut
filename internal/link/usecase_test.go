@@ -2,6 +2,7 @@ package link
 
 import (
 	"context"
+	"errors"
 	"golinkcut/internal/config"
 	"golinkcut/pkg/log"
 	"regexp"
@@ -108,6 +109,10 @@ func TestErrBadUrl_Error(t *testing.T) {
 	err2 := ErrBadUrl{Url: "some-wrong-text"}
 	if err.Error() != err2.Error() {
 		t.Errorf("Expected:%v\ngot:%v", err2, err)
+	}
+	var errBadUrl ErrBadUrl
+	if !errors.As(err, &errBadUrl) {
+		t.Errorf("Wrong error format: %T", err)
 	}
 }
 

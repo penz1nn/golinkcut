@@ -17,7 +17,7 @@ func (s *grpcServer) CreateLink(ctx context.Context, req *CreateLinkRequest) (*C
 	url := req.GetUrl()
 	l, err := s.uc.Create(ctx, link.CreateLinkRequest{OriginalLink: url})
 	if err != nil {
-		var errLinkExists *link.ErrLinkExists
+		var errLinkExists link.ErrLinkExists
 		if errors.As(err, &errLinkExists) {
 			return nil, status.Errorf(codes.AlreadyExists, "This link already exists: %v", url)
 		}
@@ -31,7 +31,7 @@ func (s *grpcServer) GetLink(ctx context.Context, req *GetLinkRequest) (*GetLink
 	alias := req.GetAlias()
 	l, err := s.uc.Get(ctx, alias)
 	if err != nil {
-		var errNotExists *link.ErrNotExists
+		var errNotExists link.ErrNotExists
 		if errors.As(err, &errNotExists) {
 			return nil, status.Errorf(codes.NotFound, "Not Found")
 		}
