@@ -15,7 +15,7 @@ const (
 )
 
 func TestNewStorage(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	if &s == nil {
 		t.Error("storage is not expected to be nil")
@@ -23,7 +23,7 @@ func TestNewStorage(t *testing.T) {
 }
 
 func TestStorage_SaveLink(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	err := s.SaveLink(context.Background(), entity.Link{Alias: short1, Original: orig1})
 	if err != nil {
@@ -32,7 +32,7 @@ func TestStorage_SaveLink(t *testing.T) {
 }
 
 func TestStorage_GetLink(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	link := entity.Link{Alias: short1, Original: orig1}
 	err := s.SaveLink(context.Background(), link)
@@ -49,7 +49,7 @@ func TestStorage_GetLink(t *testing.T) {
 }
 
 func TestErrLinkExists_Error(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	link1 := entity.Link{Alias: short1, Original: orig1}
 	link2 := entity.Link{Alias: short2, Original: orig1}
@@ -70,7 +70,7 @@ func TestErrLinkExists_Error(t *testing.T) {
 }
 
 func TestErrAliasTaken_Error(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	link1 := entity.Link{Alias: short1, Original: orig1}
 	link2 := entity.Link{Alias: short1, Original: orig2}
@@ -91,7 +91,7 @@ func TestErrAliasTaken_Error(t *testing.T) {
 }
 
 func TestErrNotExists_Error(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	_, err := s.GetLink(context.Background(), short1)
 	if err == nil {

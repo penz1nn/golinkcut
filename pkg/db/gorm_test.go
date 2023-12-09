@@ -15,7 +15,7 @@ const (
 )
 
 func TestNewStorage(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	if &s == nil {
 		t.Error("&storage is not expected to be nil")
@@ -23,7 +23,7 @@ func TestNewStorage(t *testing.T) {
 }
 
 func TestStorage_Add(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	err := s.Add(context.Background(), short1, orig1)
 	if err != nil {
@@ -32,7 +32,7 @@ func TestStorage_Add(t *testing.T) {
 }
 
 func TestErrAliasTaken_Error(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	err := s.Add(context.Background(), short1, orig1)
 	if err != nil {
@@ -48,7 +48,7 @@ func TestErrAliasTaken_Error(t *testing.T) {
 }
 
 func TestErrLinkExists_Error(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	err := s.Add(context.Background(), short1, orig1)
 	if err != nil {
@@ -64,7 +64,7 @@ func TestErrLinkExists_Error(t *testing.T) {
 }
 
 func TestStorage_Get(t *testing.T) {
-	c := config.Config{"db": "memory"}
+	c := config.Config{"memory": true}
 	s := NewStorage(c)
 	err := s.Add(context.Background(), short1, orig1)
 	if err != nil {

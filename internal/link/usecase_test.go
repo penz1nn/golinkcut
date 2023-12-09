@@ -36,7 +36,7 @@ func TestCreateLinkRequest_Validate(t *testing.T) {
 
 func TestNewUseCase(t *testing.T) {
 	c := config.Config{
-		"db":       "memory",
+		"memory":   true,
 		"validate": false,
 		"debug":    false,
 	}
@@ -50,7 +50,7 @@ func TestNewUseCase(t *testing.T) {
 
 func TestUsecase_Create(t *testing.T) {
 	c := config.Config{
-		"db":       "memory",
+		"memory":   true,
 		"validate": false,
 		"debug":    false,
 	}
@@ -72,7 +72,7 @@ func TestUsecase_Create(t *testing.T) {
 
 func TestUsecase_Get(t *testing.T) {
 	c := config.Config{
-		"db":       "memory",
+		"memory":   true,
 		"validate": false,
 		"debug":    false,
 	}
@@ -94,7 +94,7 @@ func TestUsecase_Get(t *testing.T) {
 
 func TestErrBadUrl_Error(t *testing.T) {
 	c := config.Config{
-		"db":       "memory",
+		"memory":   true,
 		"validate": true,
 		"debug":    false,
 	}

@@ -13,7 +13,7 @@ import (
 )
 
 var cfg = config.Config{
-	"db":       "memory",
+	"memory":   true,
 	"debug":    false,
 	"validate": true,
 	"httpHost": "localhost",

@@ -22,7 +22,7 @@ func init() {
 	lis = bufconn.Listen(bufSize)
 	s := grpc.NewServer()
 	c := config.Config{
-		"db":       "memory",
+		"memory":   true,
 		"debug":    false,
 		"validate": true,
 	}
