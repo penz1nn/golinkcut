@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap/zaptest/observer"
 	"golinkcut/internal/config"
 	"os"
+	"time"
 )
 
 type Logger interface {
@@ -35,27 +36,29 @@ func New() Logger {
 
 func NewWithConfig(config config.Config) Logger {
 	l, _ := zap.NewProduction()
-	if config["debug"].(bool) {
-		zConfig := zap.Config{
-			Level:             zap.NewAtomicLevelAt(zap.DebugLevel),
-			Development:       false,
-			DisableCaller:     false,
-			DisableStacktrace: false,
-			Sampling:          nil,
-			Encoding:          "console",
-			EncoderConfig:     zap.NewProductionEncoderConfig(),
-			OutputPaths: []string{
-				"stderr",
-			},
-			ErrorOutputPaths: []string{
-				"stderr",
-			},
-			InitialFields: map[string]interface{}{
-				"pid": os.Getpid(),
-			},
-		}
-		l = zap.Must(zConfig.Build())
+	zConfig := zap.Config{
+		Level:             zap.NewAtomicLevelAt(zap.InfoLevel),
+		Development:       false,
+		DisableCaller:     false,
+		DisableStacktrace: false,
+		Sampling:          nil,
+		Encoding:          "json",
+		EncoderConfig:     zap.NewProductionEncoderConfig(),
+		OutputPaths: []string{
+			"stderr",
+		},
+		ErrorOutputPaths: []string{
+			"stderr",
+		},
+		InitialFields: map[string]interface{}{
+			"pid": os.Getpid(),
+		},
 	}
+	zConfig.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.RFC3339)
+	if config["debug"].(bool) {
+		zConfig.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
+	}
+	l = zap.Must(zConfig.Build())
 	return &logger{l.Sugar()}
 }
 
