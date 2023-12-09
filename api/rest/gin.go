@@ -46,7 +46,7 @@ func (rest restApi) CreateLink(c *gin.Context) {
 }
 
 func (rest restApi) GetLink(c *gin.Context) {
-	alias := c.Request.URL.Path
+	alias := c.Request.URL.Path[1:]
 	l, err := rest.uc.Get(c, alias)
 	if err != nil {
 		var errNotExists link.ErrNotExists

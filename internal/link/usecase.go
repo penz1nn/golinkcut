@@ -86,6 +86,9 @@ func NewUseCase(repo Repository, logger log.Logger, config config.Config) UseCas
 }
 
 // TODO: use hashing instead (will allow for faster in-memory kv store)
+
+// generateShortAlias generates a random 10-symbol string from the allowed
+// characters to use as a short link alias
 func generateShortAlias() string {
 	b := make([]byte, n)
 	for i := range b {

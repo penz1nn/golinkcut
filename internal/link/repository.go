@@ -29,7 +29,6 @@ func (e ErrAliasTaken) Error() string {
 	return fmt.Sprintf("Alias %v already exists in db", e.Alias)
 }
 
-// TODO return code 409 "Conflict" when error occurs
 // ErrLinkExists error is returned in case there was an attempt to save a link
 // which is already present in DB (and has an assigned short alias)
 type ErrLinkExists struct {
