@@ -1,0 +1,11 @@
+version: '3'
+services:
+  golinkcut:
+    entrypoint: /go/bin/golinkcut --memory
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "8080:8080"
+      - "50051:50051"

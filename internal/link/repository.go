@@ -16,7 +16,7 @@ type ErrNotExists struct {
 }
 
 func (e ErrNotExists) Error() string {
-	return fmt.Sprintf("short link alias %s not found in storage", e.alias)
+	return fmt.Sprintf("short link alias %s not found", e.alias)
 }
 
 // ErrAliasTaken error is returned in case there was an attempt to save a link
@@ -26,7 +26,7 @@ type ErrAliasTaken struct {
 }
 
 func (e ErrAliasTaken) Error() string {
-	return fmt.Sprintf("Alias %v already exists in db", e.Alias)
+	return fmt.Sprintf("Alias %v already exists", e.Alias)
 }
 
 // ErrLinkExists error is returned in case there was an attempt to save a link
@@ -36,5 +36,5 @@ type ErrLinkExists struct {
 }
 
 func (e ErrLinkExists) Error() string {
-	return fmt.Sprintf("Link %v already exists in db", e.Original)
+	return fmt.Sprintf("Link %v already exists", e.Original)
 }

@@ -1,0 +1,20 @@
+version: '3'
+services:
+  golinkcut:
+    entrypoint: /go/bin/golinkcut --db-host golinkcut_db
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+  db:
+    image: postgres
+    container_name: golinkcut_db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: golinkcut
+    expose:
+      - 5432

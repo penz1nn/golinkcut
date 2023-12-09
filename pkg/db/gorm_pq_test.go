@@ -1,4 +1,4 @@
-// WARNING! Please successfully launch golinkcut/testdata/docker-compose.yml
+// WARNING! Please successfully launch golinkcut/for-tests/postgres-compose.yml
 // or these tests will be skipped.
 package db
 
