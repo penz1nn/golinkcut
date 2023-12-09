@@ -21,7 +21,7 @@ func main() {
 func buildConfig() config.Config {
 	// define flags
 	enableDebugFlag := flag.Bool("debug", false, "enable debug logs")
-	memoryDbFlag := flag.Bool("memory", true, "use in-memory storage")
+	memoryDbFlag := flag.Bool("memory", false, "use in-memory storage")
 	validateFlag := flag.Bool("validate", false, "validate submitted URLs")
 	grpcPort := flag.String("grpc-port", "50051", "listen port for GRPC server")
 	httpPort := flag.String("http-port", "8080", "listen port for REST API")
@@ -45,8 +45,9 @@ func buildConfig() config.Config {
 	}
 
 	if *memoryDbFlag {
-		cfg["db"] = "memory"
+		cfg["memory"] = true
 	} else {
+		cfg["memory"] = false
 		cfg["db"] = map[string]string{
 			"host":     *dbHost,
 			"user":     *dbUser,

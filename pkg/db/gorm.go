@@ -2,11 +2,11 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"golinkcut/internal/config"
 	"golinkcut/pkg/db/memory"
 	"golinkcut/pkg/db/postgresql"
 	"gorm.io/gorm"
+	"log"
 )
 
 const (
@@ -56,15 +56,16 @@ func (s Storage) deleteData() {
 }
 
 // NewStorage reads config.Config and returns a corresponding Storage object
-func NewStorage(config config.Config) Storage {
+func NewStorage(cfg config.Config) Storage {
 	var db *gorm.DB
-	dbCfg, ok := config["db"].(string)
-	if !ok {
-		db = postgresql.NewDb(config)
-	} else if dbCfg != "memory" {
-		panic(fmt.Sprintf("unknown db config string: config[\"db\"] == %s", dbCfg))
+	log.Printf("Will connect to database now")
+	useMemory := cfg["memory"].(bool)
+	if useMemory {
+		log.Printf("Will use in memory db")
+		db = memory.NewDb(cfg)
 	} else {
-		db = memory.NewDb(config)
+		log.Printf("Will connect to postgreSQL now")
+		db = postgresql.NewDb(cfg)
 	}
 	err := db.AutoMigrate(&Link{})
 	if err != nil {
@@ -72,26 +73,3 @@ func NewStorage(config config.Config) Storage {
 	}
 	return Storage{db}
 }
-
-/*
-// ErrAliasTaken error is returned in case there was an attempt to save a link
-// with a short alias which exists in the DB
-type ErrAliasTaken struct {
-	Alias string
-}
-
-func (e ErrAliasTaken) Error() string {
-	return fmt.Sprintf("Alias %v already exists in db", e.Alias)
-}
-
-// TODO return code 409 "Conflict" when error occurs
-// ErrLinkExists error is returned in case there was an attempt to save a link
-// which is already present in DB (and has an assigned short alias)
-type ErrLinkExists struct {
-	Original string
-}
-
-func (e ErrLinkExists) Error() string {
-	return fmt.Sprintf("Link %v already exists in db", e.Original)
-}
-*/

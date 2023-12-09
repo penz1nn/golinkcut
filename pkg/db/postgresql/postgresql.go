@@ -6,6 +6,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"log"
 )
 
 var (
@@ -34,5 +35,6 @@ func NewDb(config config.Config) *gorm.DB {
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect to database with %v", err))
 	}
+	log.Printf("Connected to PostgreSQL")
 	return db
 }

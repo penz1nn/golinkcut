@@ -1,19 +1,17 @@
 version: '3'
 services:
   golinkcut:
-    entrypoint: /go/bin/golinkcut --db-host golinkcut_db
+    entrypoint: /go/bin/golinkcut --db-host golinkcut_db_test --validate --redirect
     restart: always
     build:
       dockerfile: Dockerfile
-      context: .
+      context: ..
     ports:
       - "8080:8080"
       - "50051:50051"
   db:
     image: postgres
-    container_name: golinkcut_db
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+    container_name: golinkcut_db_test
     restart: always
     environment:
       POSTGRES_PASSWORD: example
