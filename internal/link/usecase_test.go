@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"golinkcut/internal/config"
-	"golinkcut/pkg/log"
 	"regexp"
 	"testing"
 )
@@ -41,8 +40,7 @@ func TestNewUseCase(t *testing.T) {
 		"debug":    false,
 	}
 	repo := NewStorage(c)
-	logger := log.NewWithConfig(c)
-	uc := NewUseCase(repo, logger, c)
+	uc := NewUseCase(repo, c)
 	if &uc == nil {
 		t.Error("create &uc is not expected to be nil")
 	}
@@ -55,8 +53,7 @@ func TestUsecase_Create(t *testing.T) {
 		"debug":    false,
 	}
 	repo := NewStorage(c)
-	logger := log.NewWithConfig(c)
-	uc := NewUseCase(repo, logger, c)
+	uc := NewUseCase(repo, c)
 	url := "https://mos.ru"
 	link, err := uc.Create(context.Background(), CreateLinkRequest{OriginalLink: url})
 	if err != nil {
@@ -77,8 +74,7 @@ func TestUsecase_Get(t *testing.T) {
 		"debug":    false,
 	}
 	repo := NewStorage(c)
-	logger := log.NewWithConfig(c)
-	uc := NewUseCase(repo, logger, c)
+	uc := NewUseCase(repo, c)
 	link1, err := uc.Create(context.Background(), CreateLinkRequest{OriginalLink: url1})
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -99,8 +95,7 @@ func TestErrBadUrl_Error(t *testing.T) {
 		"debug":    false,
 	}
 	repo := NewStorage(c)
-	logger := log.NewWithConfig(c)
-	uc := NewUseCase(repo, logger, c)
+	uc := NewUseCase(repo, c)
 	_, err := uc.Create(context.Background(), CreateLinkRequest{OriginalLink: url1})
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)

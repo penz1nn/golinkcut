@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"golinkcut/internal/config"
 	"golinkcut/internal/entity"
-	"golinkcut/pkg/log"
+	"log"
 	"math/rand"
 	"regexp"
 )
@@ -28,7 +28,6 @@ type UseCase interface {
 
 type usecase struct {
 	repo     Repository
-	logger   log.Logger
 	validate bool
 }
 
@@ -63,7 +62,7 @@ func (uc usecase) Create(ctx context.Context, req CreateLinkRequest) (entity.Lin
 		link = entity.Link{Alias: shortLink, Original: req.OriginalLink}
 		err = uc.repo.SaveLink(ctx, link)
 		if errors.Is(err, ErrAliasTaken{}) {
-			uc.logger.Errorf("error when trying to save new link: %v, retrying", err)
+			log.Printf("error when trying to save new link: %v, retrying", err)
 			err = nil
 		} else if err != nil {
 			break
@@ -76,13 +75,13 @@ func (uc usecase) Create(ctx context.Context, req CreateLinkRequest) (entity.Lin
 	return link, err
 }
 
-func NewUseCase(repo Repository, logger log.Logger, config config.Config) UseCase {
+func NewUseCase(repo Repository, config config.Config) UseCase {
 	validate := false
 	v, ok := config["validate"].(bool)
 	if ok && v {
 		validate = true
 	}
-	return usecase{repo: repo, logger: logger, validate: validate}
+	return usecase{repo: repo, validate: validate}
 }
 
 // TODO: use hashing instead (will allow for faster in-memory kv store)
