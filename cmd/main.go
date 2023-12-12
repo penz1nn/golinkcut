@@ -4,16 +4,14 @@ import (
 	"flag"
 	"golinkcut/internal/config"
 	"golinkcut/internal/link"
-	"golinkcut/pkg/log"
 )
 
 func main() {
 	cfg := buildConfig()
 	repo := link.NewStorage(cfg)
-	logger := log.NewWithConfig(cfg)
-	uc := link.NewUseCase(repo, logger, cfg)
-	go runGrpcServer(uc, logger, cfg)
-	runRestApi(uc, logger, cfg)
+	uc := link.NewUseCase(repo, cfg)
+	go runGrpcServer(uc, cfg)
+	runRestApi(uc, cfg)
 }
 
 // buildConfig uses the flag package to create a config.Config object from the

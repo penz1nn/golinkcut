@@ -85,7 +85,7 @@ func NewUseCase(repo Repository, config config.Config) UseCase {
 }
 
 // TODO: use hashing instead (will allow for faster in-memory kv store)
-
+// TODO: генерировать уникальное 10-значное 63-ичное число для каждой ссылки
 // generateShortAlias generates a random 10-symbol string from the allowed
 // characters to use as a short link alias
 func generateShortAlias() string {
