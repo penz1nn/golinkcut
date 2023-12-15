@@ -111,17 +111,6 @@ func TestErrBadUrl_Error(t *testing.T) {
 	}
 }
 
-func TestGen(t *testing.T) {
-	were := map[string]bool{}
-	for i := 0; i < 1000; i++ {
-		alias := generateShortAliasOld()
-		if were[alias] {
-			t.Errorf("Repeated alias %v. Please repeat the test and see if it fails more, if not, consider it safe", alias)
-		}
-		were[alias] = true
-	}
-}
-
 func TestToBase63(t *testing.T) {
 	got := toBase63(uint64(63*63*63*63*63*63*63*63*63*63 - 1))
 	want := "__________"
@@ -140,17 +129,6 @@ func TestToBase63(t *testing.T) {
 		t.Errorf("Wrong result. Got: %v, Want: %v", got, want)
 	}
 }
-
-func TestGenerateShortAlias(t *testing.T) {
-	for i := 0; i < 100; i++ {
-		randStr := generateShortAliasOld()
-		alias := generateShortAlias(randStr)
-		if !validateAlias(alias) {
-			t.Errorf("Got alias of wrong format: %v", alias)
-		}
-	}
-}
-
 func validateAlias(alias string) bool {
 	if len(alias) != 10 {
 		return false

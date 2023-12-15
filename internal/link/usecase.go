@@ -4,12 +4,9 @@ import (
 	"context"
 	"crypto/sha1"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"golinkcut/internal/config"
 	"golinkcut/internal/entity"
-	"log"
-	"math/rand"
 	"regexp"
 	"strconv"
 )
@@ -17,10 +14,8 @@ import (
 const (
 	// letterBytes represent the letters which are allowed to be in the short link alias
 	letterBytes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
-	// n is the number of letters in the short string alias
-	n          = 10
-	urlPattern = "(?sm)[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
-	maxAlias   = 63*63*63*63*63*63*63*63*63*63 - 1
+	urlPattern  = "(?sm)[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
+	maxAlias    = 63*63*63*63*63*63*63*63*63*63 - 1
 )
 
 var urlRegex = regexp.MustCompile(urlPattern)
@@ -53,31 +48,14 @@ func (req CreateLinkRequest) Validate() bool {
 }
 
 func (uc usecase) Create(ctx context.Context, req CreateLinkRequest) (entity.Link, error) {
-	link := entity.Link{}
 	if uc.validate && !req.Validate() {
-		return link, ErrBadUrl{Url: req.OriginalLink}
-	}
-	saved := false
-	tries := 0
-	var err error
-	for !saved && tries < 100 {
-		tries++
-		shortLink := generateShortAliasOld()
-		link = entity.Link{Alias: shortLink, Original: req.OriginalLink}
-		err = uc.repo.SaveLink(ctx, link)
-		if errors.Is(err, ErrAliasTaken{}) {
-			log.Printf("error when trying to save new link: %v, retrying", err)
-			err = nil
-		} else if err != nil {
-			break
-		}
-		saved = true
+		return entity.Link{}, ErrBadUrl{Url: req.OriginalLink}
 	}
 
-	if tries >= 100 {
-		panic("could not save a link after 100 tries!")
-	}
-	return link, err
+	shortLink := generateShortAlias(req.OriginalLink)
+	l := entity.Link{Alias: shortLink, Original: req.OriginalLink}
+	err := uc.repo.SaveLink(ctx, l)
+	return l, err
 }
 
 func NewUseCase(repo Repository, config config.Config) UseCase {
@@ -117,18 +95,6 @@ func toBase63(num uint64) string {
 		result[i], result[j] = result[j], result[i]
 	}
 	return string(result)
-}
-
-// TODO: use hashing instead (will allow for faster in-memory kv store)
-// TODO: генерировать уникальное 10-значное 63-ичное число для каждой ссылки
-// generateShortAliasOld generates a random 10-symbol string from the allowed
-// characters to use as a short link alias
-func generateShortAliasOld() string {
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = letterBytes[rand.Intn(len(letterBytes))]
-	}
-	return string(b)
 }
 
 type ErrBadUrl struct {
