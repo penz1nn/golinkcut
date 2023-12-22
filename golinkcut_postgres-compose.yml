@@ -30,5 +30,6 @@ services:
       timeout: 5s
       retries: 10
 
+
 volumes:
   golinkcut-pgdata: # volume to preserve PostgreSQL data

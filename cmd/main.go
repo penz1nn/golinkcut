@@ -4,6 +4,7 @@ import (
 	"flag"
 	"golinkcut/internal/config"
 	"golinkcut/internal/link"
+	"log"
 )
 
 // TODO: comments for constants and functions
@@ -15,6 +16,7 @@ func main() {
 	uc := link.NewUseCase(repo, cfg)
 	go runGrpcServer(uc, cfg)
 	runRestApi(uc, cfg)
+	log.Printf("Application stopped.")
 }
 
 // buildConfig uses the flag package to create a config.Config object from the
