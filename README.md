@@ -40,5 +40,4 @@ $ docker compose -f golinkcut_postgres-compose.yml up --build
 $ docker compose -f golinkcut_standalone-compose.yml up --build
 ```
 # P.S.
-- ветка *later* является продолжением ветки *master* и имеет коммиты созданные после дедлайна 09.12.2023 23:59 MSK
 - в /for-tests/ находятся скрипты для тестирования API 
