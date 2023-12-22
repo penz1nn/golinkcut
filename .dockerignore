@@ -1,2 +1,6 @@
 api/proto/links.pb.go
 api/proto/links_grpc.pb.go
+for-tests/
+README.md
+golinkcut_standalone-compose.yml
+golinkcut_postgres-compose.yml

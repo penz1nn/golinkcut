@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 services:
   golinkcut:
     entrypoint: /go/bin/golinkcut --db-host golinkcut_db
@@ -6,19 +6,29 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-    volumes:
-      - ./go-modules:/go/pkg/mod # Put modules cache into a separate module
+      target: final
     ports:
       - "8080:8080"
       - "50051:50051"
+    depends_on:
+      db:
+        condition: service_healthy
   db:
     image: postgres
     container_name: golinkcut_db
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_USER: golinkcut
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_USER=golinkcut
     expose:
       - 5432
+    volumes:
+      - golinkcut-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  golinkcut-pgdata: # volume to preserve PostgreSQL data

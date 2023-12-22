@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 services:
   golinkcut:
     entrypoint: /go/bin/golinkcut --memory
@@ -6,8 +6,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-    volumes:
-      - ./go-modules:/go/pkg/mod # Put modules cache into a separate module
+      target: final
     ports:
       - "8080:8080"
       - "50051:50051"
