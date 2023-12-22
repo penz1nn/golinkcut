@@ -28,7 +28,7 @@ func init() {
 
 	repo := link.NewDbStorage(c)
 	uc := link.NewUseCase(repo, c)
-	srv := NewGrpcServer(uc)
+	srv := NewGrpcService(uc)
 	RegisterLinkServiceServer(s, &srv)
 	go func() {
 		if err := s.Serve(lis); err != nil {

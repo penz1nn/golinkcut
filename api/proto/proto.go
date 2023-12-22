@@ -8,12 +8,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type grpcServer struct {
+// grpcService
+type grpcService struct {
 	UnimplementedLinkServiceServer
 	uc link.UseCase
 }
 
-func (s *grpcServer) CreateLink(ctx context.Context, req *CreateLinkRequest) (*CreateLinkResponse, error) {
+func (s *grpcService) CreateLink(ctx context.Context, req *CreateLinkRequest) (*CreateLinkResponse, error) {
 	url := req.GetUrl()
 	l, err := s.uc.Create(ctx, link.CreateLinkRequest{OriginalLink: url})
 	if err != nil {
@@ -31,7 +32,7 @@ func (s *grpcServer) CreateLink(ctx context.Context, req *CreateLinkRequest) (*C
 	return res, nil
 }
 
-func (s *grpcServer) GetLink(ctx context.Context, req *GetLinkRequest) (*GetLinkResponse, error) {
+func (s *grpcService) GetLink(ctx context.Context, req *GetLinkRequest) (*GetLinkResponse, error) {
 	alias := req.GetAlias()
 	l, err := s.uc.Get(ctx, alias)
 	if err != nil {
@@ -45,8 +46,8 @@ func (s *grpcServer) GetLink(ctx context.Context, req *GetLinkRequest) (*GetLink
 	return res, nil
 }
 
-func NewGrpcServer(uc link.UseCase) grpcServer {
-	gs := grpcServer{
+func NewGrpcService(uc link.UseCase) grpcService {
+	gs := grpcService{
 		uc: uc,
 	}
 	return gs
