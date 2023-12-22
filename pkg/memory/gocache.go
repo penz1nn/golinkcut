@@ -1,4 +1,3 @@
-// TODO delete this package
 package memory
 
 import (
@@ -6,6 +5,7 @@ import (
 	"github.com/eko/gocache/lib/v4/cache"
 	gocachestore "github.com/eko/gocache/store/go_cache/v4"
 	gocache "github.com/patrickmn/go-cache"
+	"log"
 	"time"
 )
 
@@ -25,7 +25,7 @@ func NewStorage() *Storage {
 func (s *Storage) SetKey(ctx context.Context, key string, value string) {
 	err := s.cm.Set(ctx, key, []byte(value))
 	if err != nil {
-		panic(err)
+		log.Printf("Unexpected error when setting key %s to value %s in storage: %s", key, value, err)
 	}
 }
 
@@ -35,7 +35,7 @@ func (s *Storage) GetKey(ctx context.Context, key string) string {
 		if err.Error() == "value not found in store" {
 			return ""
 		}
-		panic(err)
+		log.Printf("Unexpected error when fetching key %s from cache: %s", key, err)
 	}
 	return string(value)
 }

@@ -71,3 +71,7 @@ func TestStorage_Get(t *testing.T) {
 		t.Errorf("Wrong type of error. Got: %T, want: %T", err, ref)
 	}
 }
+
+func (s Storage) deleteData() {
+	s.db.Exec("DROP TABLE links")
+}

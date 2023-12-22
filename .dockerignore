@@ -1,3 +1,2 @@
-go.mod
 api/proto/links.pb.go
 api/proto/links_grpc.pb.go

@@ -50,10 +50,6 @@ func (s Storage) Get(ctx context.Context, alias string) (string, error) {
 	return link.Original, nil
 }
 
-func (s Storage) deleteData() {
-	s.db.Exec("DROP TABLE links")
-}
-
 // NewStorage reads config.Config and returns a corresponding Storage object
 func NewStorage(cfg config.Config) Storage {
 	var db *gorm.DB

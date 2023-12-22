@@ -6,6 +6,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+    volumes:
+      - ./go-modules:/go/pkg/mod # Put modules cache into a separate module
     ports:
       - "8080:8080"
       - "50051:50051"

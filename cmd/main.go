@@ -6,7 +6,10 @@ import (
 	"golinkcut/internal/link"
 )
 
+// TODO: comments for constants and functions
+
 func main() {
+
 	cfg := buildConfig()
 	repo := link.NewStorage(cfg)
 	uc := link.NewUseCase(repo, cfg)
@@ -20,7 +23,7 @@ func buildConfig() config.Config {
 	// define flags
 	enableDebugFlag := flag.Bool("debug", false, "enable debug logs")
 	memoryDbFlag := flag.Bool("memory", false, "use in-memory storage")
-	validateFlag := flag.Bool("validate", false, "validate submitted URLs")
+	validateFlag := flag.Bool("validate", true, "validate submitted URLs")
 	grpcPort := flag.String("grpc-port", "50051", "listen port for GRPC server")
 	httpPort := flag.String("http-port", "8080", "listen port for REST API")
 	httpHost := flag.String("http-host", "localhost", "what to use as REST API hostname")

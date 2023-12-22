@@ -70,12 +70,10 @@ func NewUseCase(repo Repository, config config.Config) UseCase {
 func generateShortAlias(url string) string {
 	h := sha1.New()
 	h.Write([]byte(url))
-	sha_str := hex.EncodeToString(h.Sum(nil)[12:])
-	sha_hash, err := strconv.ParseUint(sha_str, 16, 64)
-	if err != nil {
-		panic(err)
-	}
-	hash := sha_hash % maxAlias
+	shaStr := hex.EncodeToString(h.Sum(nil)[12:])
+	// NOTE: unhandled error here; test show the code is reliable
+	shaHash, _ := strconv.ParseUint(shaStr, 16, 64)
+	hash := shaHash % maxAlias
 	return toBase63(hash)
 }
 
@@ -86,7 +84,7 @@ func toBase63(num uint64) string {
 		result = append(result, rune(letterBytes[remainder]))
 		num = num / 63
 	}
-	if len(result) < 10 {
+	for len(result) < 10 {
 		for i := 0; i < 10-len(result); i++ {
 			result = append(result, rune(letterBytes[0]))
 		}

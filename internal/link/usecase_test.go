@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"golinkcut/internal/config"
+	"math/rand"
 	"regexp"
 	"testing"
 )
@@ -13,6 +14,8 @@ const (
 	url2 = "github.com/penz1nn/golinkcut"
 	url3 = "ftp://192.168.1.1"
 )
+
+var lettersTest = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_+?./")
 
 func TestCreateLinkRequest_Validate(t *testing.T) {
 	req := CreateLinkRequest{url1}
@@ -129,6 +132,22 @@ func TestToBase63(t *testing.T) {
 		t.Errorf("Wrong result. Got: %v, Want: %v", got, want)
 	}
 }
+
+func TestGenAlias(t *testing.T) {
+
+	for i := 0; i < 1000000; i++ {
+		b := make([]rune, rand.Intn(30))
+		for i := range b {
+			b[i] = lettersTest[rand.Intn(len(lettersTest))]
+		}
+		str := string(b)
+		alias := generateShortAlias(str)
+		if !validateAlias(alias) {
+			t.Errorf("Wrong alias format: %s", alias)
+		}
+	}
+}
+
 func validateAlias(alias string) bool {
 	if len(alias) != 10 {
 		return false
