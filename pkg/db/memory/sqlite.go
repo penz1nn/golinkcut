@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+// NewDb creates a new SQLite in-memory database and returns a connection to it
 func NewDb(config config.Config) *gorm.DB {
 	cfg := &gorm.Config{Logger: logger.Default.LogMode(logger.Silent), TranslateError: true}
 	if debug, ok := config["debug"]; ok {

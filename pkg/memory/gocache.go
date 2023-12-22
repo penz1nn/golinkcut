@@ -1,3 +1,4 @@
+// Package memory contains code for use of in-memory key-value storage
 package memory
 
 import (
@@ -9,10 +10,12 @@ import (
 	"time"
 )
 
+// Storage struct encapsulates an instance of in-memory key-value storage
 type Storage struct {
 	cm *cache.Cache[[]byte]
 }
 
+// NewStorage creates a new Storage instance
 func NewStorage() *Storage {
 	// Client of patrickmn/go-cache package
 	gocacheClient := gocache.New(5*time.Minute, 10*time.Minute)
@@ -22,6 +25,9 @@ func NewStorage() *Storage {
 	return &Storage{cm}
 }
 
+// SetKey receives string values of key and value to create such record in the
+// storage. It does not check whether the key already exists, so such check has
+// to be performed upstream.
 func (s *Storage) SetKey(ctx context.Context, key string, value string) {
 	err := s.cm.Set(ctx, key, []byte(value))
 	if err != nil {
@@ -29,6 +35,8 @@ func (s *Storage) SetKey(ctx context.Context, key string, value string) {
 	}
 }
 
+// GetKey looks up a provided key in the storage and returns its string value.
+// If key does not exist, it returns an empty string.
 func (s *Storage) GetKey(ctx context.Context, key string) string {
 	value, err := s.cm.Get(ctx, key)
 	if err != nil {

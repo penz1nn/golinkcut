@@ -1,3 +1,4 @@
+// Package postgresql contains code to get a connection to PostgreSQL database
 package postgresql
 
 import (
@@ -14,6 +15,7 @@ var (
 	dbsettings = [6]string{"host=%s ", "user=%s ", "password=%s ", "dbname=%s ", "port=%s ", "sslmode=disable TimeZone=%s"}
 )
 
+// NewDb creates a new connection to the PostgreSQL database
 func NewDb(config config.Config) *gorm.DB {
 	connStr := ""
 	for index, param := range dbparams {
