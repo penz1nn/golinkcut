@@ -25,10 +25,10 @@ func NewDb(config config.Config) *gorm.DB {
 		}
 	}
 
-	cfg := &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)}
+	cfg := &gorm.Config{Logger: logger.Default.LogMode(logger.Silent), TranslateError: true}
 	if debug, ok := config["debug"]; ok {
 		if debug.(bool) {
-			cfg = &gorm.Config{}
+			cfg = &gorm.Config{TranslateError: true}
 		}
 	}
 	db, err := gorm.Open(postgres.Open(connStr), cfg)

@@ -19,16 +19,6 @@ func (e ErrNotExists) Error() string {
 	return fmt.Sprintf("short link alias %s not found", e.alias)
 }
 
-// ErrAliasTaken error is returned in case there was an attempt to save a link
-// with a short alias which exists in the DB
-type ErrAliasTaken struct {
-	Alias string
-}
-
-func (e ErrAliasTaken) Error() string {
-	return fmt.Sprintf("Alias %v already exists", e.Alias)
-}
-
 // ErrLinkExists error is returned in case there was an attempt to save a link
 // which is already present in DB (and has an assigned short alias)
 type ErrLinkExists struct {

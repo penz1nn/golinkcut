@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"golinkcut/internal/config"
 	"golinkcut/internal/link"
-	"golinkcut/pkg/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
@@ -27,9 +26,8 @@ func init() {
 		"validate": true,
 	}
 
-	repo := link.NewStorage(c)
-	logger := log.NewWithConfig(c)
-	uc := link.NewUseCase(repo, logger, c)
+	repo := link.NewDbStorage(c)
+	uc := link.NewUseCase(repo, c)
 	srv := NewGrpcServer(uc)
 	RegisterLinkServiceServer(s, &srv)
 	go func() {

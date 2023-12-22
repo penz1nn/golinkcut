@@ -4,8 +4,8 @@ package db
 
 import (
 	"context"
+	"errors"
 	"golinkcut/internal/config"
-	"strings"
 	"testing"
 )
 
@@ -20,6 +20,7 @@ const (
 
 func initStorage(t *testing.T) Storage {
 	cfg := config.Config{
+		"memory": false,
 		"db": map[string]string{
 			"host":     host,
 			"user":     user,
@@ -65,8 +66,9 @@ func TestStorage_Get2(t *testing.T) {
 	if err == nil {
 		t.Error("An error expected but got nil")
 	}
-	if !strings.Contains(err.Error(), ErrNotExistsSignature) {
-		t.Errorf("Substring %s not found in error text: %v", ErrNotExistsSignature, err)
+	var ref ErrNotExists
+	if !errors.As(err, &ref) {
+		t.Errorf("Wrong type of error. Got: %T, want: %T", err, ref)
 	}
 }
 
@@ -80,22 +82,8 @@ func TestErrAliasTaken_Error2(t *testing.T) {
 	if err == nil {
 		t.Error("Error is expected but it's nil")
 	}
-	if !strings.Contains(err.Error(), ErrAliasTakenSignature2) {
-		t.Errorf("Wrong error format: %s", err.Error())
-	}
-}
-
-func TestErrLinkExists_Error2(t *testing.T) {
-	s := initStorage(t)
-	err := s.Add(context.Background(), short1, orig1)
-	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
-	}
-	err = s.Add(context.Background(), short2, orig1)
-	if err == nil {
-		t.Error("Error is expected but it's nil")
-	}
-	if !strings.Contains(err.Error(), ErrLinkExistsSignature2) {
-		t.Errorf("Wrong error format: %s", err.Error())
+	var ref ErrAliasExists
+	if !errors.As(err, &ref) {
+		t.Errorf("Wrong type of error. Got: %T, want: %T", err, ref)
 	}
 }

@@ -1,3 +1,4 @@
+// Package memory (SQLite / in-memory SQL database) is used for tests only, this code is otherwise deprecated
 package memory
 
 import (
@@ -8,7 +9,7 @@ import (
 )
 
 func NewDb(config config.Config) *gorm.DB {
-	cfg := &gorm.Config{Logger: logger.Default.LogMode(logger.Silent)}
+	cfg := &gorm.Config{Logger: logger.Default.LogMode(logger.Silent), TranslateError: true}
 	if debug, ok := config["debug"]; ok {
 		if debug.(bool) {
 			cfg = &gorm.Config{}

@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"golinkcut/internal/config"
 	"golinkcut/internal/link"
-	"golinkcut/pkg/log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -22,9 +21,8 @@ var cfg = config.Config{
 }
 
 func setupRouter() *gin.Engine {
-	l := log.NewWithConfig(cfg)
-	s := link.NewStorage(cfg)
-	uc := link.NewUseCase(s, l, cfg)
+	s := link.NewDbStorage(cfg)
+	uc := link.NewUseCase(s, cfg)
 	return SetupRouter(uc, cfg)
 }
 

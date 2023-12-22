@@ -1,11 +1,12 @@
-version: '3'
+version: '3.4'
 services:
   golinkcut:
-    entrypoint: /go/bin/golinkcut --db-host golinkcut_db_test
+    entrypoint: /go/bin/golinkcut --memory
     restart: always
     build:
       dockerfile: Dockerfile
       context: ..
+      target: final
     ports:
       - "8080:8080"
       - "50051:50051"

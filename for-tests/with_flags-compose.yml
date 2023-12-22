@@ -1,11 +1,12 @@
-version: '3'
+version: '3.4'
 services:
   golinkcut:
-    entrypoint: /go/bin/golinkcut --db-host golinkcut_db_test --validate --redirect
+    entrypoint: /go/bin/golinkcut --db-host golinkcut_db_test --redirect
     restart: always
     build:
       dockerfile: Dockerfile
       context: ..
+      target: final
     ports:
       - "8080:8080"
       - "50051:50051"
@@ -18,3 +19,6 @@ services:
       POSTGRES_USER: golinkcut
     expose:
       - 5432
+
+#volumes:
+  #golinkcut-postgres-data:

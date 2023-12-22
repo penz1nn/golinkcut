@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"golinkcut/internal/config"
-	"golinkcut/pkg/log"
+	"math/rand"
 	"regexp"
 	"testing"
 )
@@ -14,6 +14,8 @@ const (
 	url2 = "github.com/penz1nn/golinkcut"
 	url3 = "ftp://192.168.1.1"
 )
+
+var lettersTest = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_+?./")
 
 func TestCreateLinkRequest_Validate(t *testing.T) {
 	req := CreateLinkRequest{url1}
@@ -41,8 +43,7 @@ func TestNewUseCase(t *testing.T) {
 		"debug":    false,
 	}
 	repo := NewStorage(c)
-	logger := log.NewWithConfig(c)
-	uc := NewUseCase(repo, logger, c)
+	uc := NewUseCase(repo, c)
 	if &uc == nil {
 		t.Error("create &uc is not expected to be nil")
 	}
@@ -55,8 +56,7 @@ func TestUsecase_Create(t *testing.T) {
 		"debug":    false,
 	}
 	repo := NewStorage(c)
-	logger := log.NewWithConfig(c)
-	uc := NewUseCase(repo, logger, c)
+	uc := NewUseCase(repo, c)
 	url := "https://mos.ru"
 	link, err := uc.Create(context.Background(), CreateLinkRequest{OriginalLink: url})
 	if err != nil {
@@ -77,8 +77,7 @@ func TestUsecase_Get(t *testing.T) {
 		"debug":    false,
 	}
 	repo := NewStorage(c)
-	logger := log.NewWithConfig(c)
-	uc := NewUseCase(repo, logger, c)
+	uc := NewUseCase(repo, c)
 	link1, err := uc.Create(context.Background(), CreateLinkRequest{OriginalLink: url1})
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -99,8 +98,7 @@ func TestErrBadUrl_Error(t *testing.T) {
 		"debug":    false,
 	}
 	repo := NewStorage(c)
-	logger := log.NewWithConfig(c)
-	uc := NewUseCase(repo, logger, c)
+	uc := NewUseCase(repo, c)
 	_, err := uc.Create(context.Background(), CreateLinkRequest{OriginalLink: url1})
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -116,14 +114,37 @@ func TestErrBadUrl_Error(t *testing.T) {
 	}
 }
 
-func TestGen(t *testing.T) {
-	were := map[string]bool{}
-	for i := 0; i < 1000; i++ {
-		alias := generateShortAlias()
-		if were[alias] {
-			t.Errorf("Repeated alias %v. Please repeat the test and see if it fails more, if not, consider it safe", alias)
+func TestToBase63(t *testing.T) {
+	got := toBase63(uint64(63*63*63*63*63*63*63*63*63*63 - 1))
+	want := "__________"
+	if got != want {
+		t.Errorf("Wrong result. Got: %v, Want: %v", got, want)
+	}
+	var num1 uint64 = 63 * 63 * 63 * 63 * 63 * 63 * 63 * 63 * 63 * 62
+	num1 = num1 + 17*63*63*63*63*63*63*63*63
+	num1 = num1 + 14*63*63*63*63*63*63*63
+	num1 = num1 + 21*63*63*63*63*63*63
+	num1 = num1 + 21*63*63*63*63*63
+	num1 = num1 + 24*63*63*63*63
+	got = toBase63(num1)
+	want = "_hello0000"
+	if got != want {
+		t.Errorf("Wrong result. Got: %v, Want: %v", got, want)
+	}
+}
+
+func TestGenAlias(t *testing.T) {
+
+	for i := 0; i < 1000000; i++ {
+		b := make([]rune, rand.Intn(30))
+		for i := range b {
+			b[i] = lettersTest[rand.Intn(len(lettersTest))]
 		}
-		were[alias] = true
+		str := string(b)
+		alias := generateShortAlias(str)
+		if !validateAlias(alias) {
+			t.Errorf("Wrong alias format: %s", alias)
+		}
 	}
 }
 
