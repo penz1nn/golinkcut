@@ -33,10 +33,12 @@ GetLink(GetLinkRequest(Alias: "shortalias"))
 
 # Quick Start
 ```
+go mod init
 $ docker compose -f golinkcut_postgres-compose.yml up --build
 ```
 ИЛИ (если будет использовано только in-memory хранилище, тогда контейнер Postgres не нужен)
 ```
+go mod init
 $ docker compose -f golinkcut_standalone-compose.yml up --build
 ```
 # P.S.
