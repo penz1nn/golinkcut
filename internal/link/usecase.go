@@ -31,7 +31,10 @@ var urlRegex = regexp.MustCompile(urlPattern)
 // UseCase is the interface which defines behavior to execute the main
 // business logic of application - fetching created and creating  new short links
 type UseCase interface {
+	// Get fetches the entity.Link instance, given it's alias (the key part of the short link)
 	Get(ctx context.Context, shortLink string) (entity.Link, error)
+
+	// Create receives a CreateLinkRequest to create and store the entity.Link
 	Create(ctx context.Context, input CreateLinkRequest) (entity.Link, error)
 }
 
@@ -41,7 +44,6 @@ type usecase struct {
 	validate bool
 }
 
-// Get fetches the entity.Link instance, given it's alias (the key part of the short link)
 func (uc usecase) Get(ctx context.Context, shortLink string) (entity.Link, error) {
 	link, err := uc.repo.GetLink(ctx, shortLink)
 	return link, err
@@ -57,7 +59,6 @@ func (req CreateLinkRequest) Validate() bool {
 	return urlRegex.MatchString(req.OriginalLink)
 }
 
-// Create receives a CreateLinkRequest to create and store the entity.Link
 func (uc usecase) Create(ctx context.Context, req CreateLinkRequest) (entity.Link, error) {
 	if uc.validate && !req.Validate() {
 		return entity.Link{}, ErrBadUrl{Url: req.OriginalLink}

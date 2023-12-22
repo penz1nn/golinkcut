@@ -8,6 +8,7 @@ import (
 	"golinkcut/pkg/db"
 )
 
+// dbStorage implements the Repository interface using db.Storage
 type dbStorage struct {
 	db db.Storage
 }
@@ -34,6 +35,6 @@ func (s dbStorage) SaveLink(ctx context.Context, link entity.Link) error {
 	return err
 }
 
-func NewDbStorage(config config.Config) dbStorage {
+func NewDbStorage(config config.Config) Repository {
 	return dbStorage{db.NewStorage(config)}
 }

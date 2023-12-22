@@ -6,11 +6,17 @@ import (
 	"golinkcut/internal/entity"
 )
 
+// Repository interface defines behavior to save and get entity.Link instances
 type Repository interface {
+	// GetLink receives link's short alias to fetch entity.Link instance
 	GetLink(ctx context.Context, alias string) (entity.Link, error)
+
+	// SaveLink receives an entity.Link instance to save it in storage
 	SaveLink(ctx context.Context, link entity.Link) error
 }
 
+// ErrNotExists represents an error which is thrown when there is no entity.Link
+// instance saved in storage which contains given alias
 type ErrNotExists struct {
 	alias string
 }

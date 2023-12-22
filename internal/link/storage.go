@@ -5,6 +5,8 @@ import (
 	"log"
 )
 
+// NewStorage is used to define a correct Repository implementation and create
+// its instance
 func NewStorage(cfg config.Config) Repository {
 	if cfg["memory"].(bool) {
 		log.Print("Will use in memory key-value store")

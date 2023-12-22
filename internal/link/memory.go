@@ -6,6 +6,7 @@ import (
 	"golinkcut/pkg/memory"
 )
 
+// kvStorage implements the Repository interface using memory.Storage
 type kvStorage struct {
 	s *memory.Storage
 }
@@ -28,6 +29,6 @@ func (kv kvStorage) SaveLink(ctx context.Context, link entity.Link) error {
 	return nil
 }
 
-func NewKvStorage() kvStorage {
+func NewKvStorage() Repository {
 	return kvStorage{memory.NewStorage()}
 }
