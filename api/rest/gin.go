@@ -1,3 +1,4 @@
+// Package rest contains code to tie application's business logic with a REST API
 package rest
 
 import (
@@ -9,17 +10,20 @@ import (
 	"net/http"
 )
 
-type restApi struct {
+// restApiService encapsulates link.Usecase instance to perform application's
+// business logic with REST API
+type restApiService struct {
 	uc       link.UseCase
 	redirect bool
 	host     string
 }
 
+// CreateLinkRequest is a model of API user's request to create a new short link
 type CreateLinkRequest struct {
 	Url string `json:"url,omitempty" binding:"required"`
 }
 
-func (rest restApi) CreateLink(c *gin.Context) {
+func (rest restApiService) CreateLink(c *gin.Context) {
 	var input CreateLinkRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -45,7 +49,7 @@ func (rest restApi) CreateLink(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"shortLink": shortLink})
 }
 
-func (rest restApi) GetLink(c *gin.Context) {
+func (rest restApiService) GetLink(c *gin.Context) {
 	alias := c.Request.URL.Path[1:]
 	l, err := rest.uc.Get(c, alias)
 	if err != nil {
@@ -66,8 +70,8 @@ func (rest restApi) GetLink(c *gin.Context) {
 	}
 }
 
-func NewRestApi(cfg config.Config, uc link.UseCase) restApi {
-	rest := restApi{
+func NewRestApiService(cfg config.Config, uc link.UseCase) restApiService {
+	rest := restApiService{
 		uc:       uc,
 		redirect: cfg["redirect"].(bool),
 		host:     cfg["httpHost"].(string),

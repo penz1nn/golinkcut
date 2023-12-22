@@ -29,6 +29,7 @@ func NewDb(config config.Config) *gorm.DB {
 
 	cfg := &gorm.Config{Logger: logger.Default.LogMode(logger.Silent), TranslateError: true}
 	if debug, ok := config["debug"]; ok {
+		// unsilence PostgeSQL logging
 		if debug.(bool) {
 			cfg = &gorm.Config{TranslateError: true}
 		}

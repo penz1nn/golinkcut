@@ -1,3 +1,4 @@
+// Package proto contains code to tie application's business logic with GRPC API
 package proto
 
 import (
@@ -8,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// grpcService
+// grpcService encapsulates link.UseCase to tie business logic with GRPC API
 type grpcService struct {
 	UnimplementedLinkServiceServer
 	uc link.UseCase

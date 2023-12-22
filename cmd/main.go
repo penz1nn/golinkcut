@@ -7,10 +7,7 @@ import (
 	"log"
 )
 
-// TODO: comments for constants and functions
-
 func main() {
-
 	cfg := buildConfig()
 	repo := link.NewStorage(cfg)
 	uc := link.NewUseCase(repo, cfg)

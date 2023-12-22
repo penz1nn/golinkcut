@@ -13,6 +13,8 @@ import (
 	"syscall"
 )
 
+// runGrpcServer receives a link.UseCase instance to perform operations and
+// config.Config instance to create and run GRPC API for the application
 func runGrpcServer(uc link.UseCase, cfg config.Config) {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
